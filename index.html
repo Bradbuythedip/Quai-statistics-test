@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quai Network Mining Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .calculator {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f1f1f1;
+        }
+        input[type="number"] {
+            width: 200px;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .reward-estimate {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quai Network Mining Calculator</h1>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Network Constants</h3>
+                <p>Workshares per Day: 128,000</p>
+                <p>Quai per Workshare: 3.5 QUAI</p>
+                <p>Total Daily Quai: 448,000 QUAI</p>
+            </div>
+        </div>
+
+        <div class="calculator">
+            <h2>Reward Calculator</h2>
+            <div>
+                <label for="hashrate">Your Hashrate (GH/s):</label><br>
+                <input type="number" id="hashrate" step="0.1" required><br>
+                <label for="networkhashrate">Network Hashrate (GH/s):</label><br>
+                <input type="number" id="networkhashrate" step="0.1" required><br>
+                <button onclick="calculateRewards()">Calculate Rewards</button>
+            </div>
+
+            <div id="rewardEstimate" class="reward-estimate" style="display: none;">
+                <h3>Estimated Rewards</h3>
+                <p>Daily: <span id="dailyReward">0</span> QUAI</p>
+                <p>Weekly: <span id="weeklyReward">0</span> QUAI</p>
+                <p>Monthly: <span id="monthlyReward">0</span> QUAI</p>
+            </div>
+        </div>
+
+        <div class="example-rewards">
+            <h2>Example Daily Rewards (Assuming 400 GH/s Network Hashrate)</h2>
+            <table>
+                <tr>
+                    <th>Hashrate (GH/s)</th>
+                    <th>Daily Reward (QUAI)</th>
+                </tr>
+                <tr>
+                    <td>1 GH/s</td>
+                    <td>1,120 QUAI</td>
+                </tr>
+                <tr>
+                    <td>5 GH/s</td>
+                    <td>5,600 QUAI</td>
+                </tr>
+                <tr>
+                    <td>10 GH/s</td>
+                    <td>11,200 QUAI</td>
+                </tr>
+                <tr>
+                    <td>50 GH/s</td>
+                    <td>56,000 QUAI</td>
+                </tr>
+                <tr>
+                    <td>100 GH/s</td>
+                    <td>112,000 QUAI</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function calculateRewards() {
+            const hashrate = parseFloat(document.getElementById('hashrate').value);
+            const networkHashrate = parseFloat(document.getElementById('networkhashrate').value);
+            
+            if (isNaN(hashrate) || isNaN(networkHashrate) || networkHashrate === 0) {
+                alert('Please enter valid hashrate values');
+                return;
+            }
+            
+            const dailyWorkshares = 128000;
+            const quaiPerWorkshare = 3.5;
+            const totalDailyQuai = dailyWorkshares * quaiPerWorkshare;
+            
+            const proportion = hashrate / networkHashrate;
+            const dailyReward = proportion * totalDailyQuai;
+            const weeklyReward = dailyReward * 7;
+            const monthlyReward = dailyReward * 30;
+            
+            document.getElementById('rewardEstimate').style.display = 'block';
+            document.getElementById('dailyReward').textContent = dailyReward.toFixed(2);
+            document.getElementById('weeklyReward').textContent = weeklyReward.toFixed(2);
+            document.getElementById('monthlyReward').textContent = monthlyReward.toFixed(2);
+        }
+    </script>
+</body>
+</html>
